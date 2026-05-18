@@ -1,10 +1,10 @@
 package polyana.example.poanoite.service;
 
-import polyana.example.poanoite.domain.CasaDeFesta;
+import polyana.example.poanoite.domain.LocalEvento;
 import polyana.example.poanoite.repository.CasaDeFestaRepository;
 import polyana.example.poanoite.repository.CasaDeFestaSpecification;
-import polyana.example.poanoite.dto.CasaDeFestaCreateDTO;
-import polyana.example.poanoite.dto.CasaDeFestaResponseDTO;
+import polyana.example.poanoite.dto.LocalEventoCreateDTO;
+import polyana.example.poanoite.dto.LocalEventoResponseDTO;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +20,8 @@ public class CasaDeFestaService {
     }
 
     // CONVERSÃO ENTITY -> DTO
-    private CasaDeFestaResponseDTO paraDTO(CasaDeFesta casa) {
-        CasaDeFestaResponseDTO dto = new CasaDeFestaResponseDTO();
+    private LocalEventoResponseDTO paraDTO(LocalEvento casa) {
+        LocalEventoResponseDTO dto = new LocalEventoResponseDTO();
 
         dto.setId(casa.getId());
         dto.setNome(casa.getNome());
@@ -37,9 +37,9 @@ public class CasaDeFestaService {
     }
 
     // CREATE
-    public CasaDeFestaResponseDTO criar(CasaDeFestaCreateDTO dto) {
+    public LocalEventoResponseDTO criar(LocalEventoCreateDTO dto) {
 
-        CasaDeFesta casa = new CasaDeFesta();
+        LocalEvento casa = new LocalEvento();
 
         casa.setNome(dto.getNome());
         casa.setTipoEvento(dto.getTipoEvento());
@@ -50,15 +50,15 @@ public class CasaDeFestaService {
         casa.setBuffetIncluso(dto.getBuffetIncluso());
         casa.setStatus(dto.getStatus());
 
-        CasaDeFesta salvo = casaRepository.save(casa);
+        LocalEvento salvo = casaRepository.save(casa);
 
         return paraDTO(salvo);
     }
 
     // LISTAR TODOS
-    public List<CasaDeFestaResponseDTO> listarTodos() {
+    public List<LocalEventoResponseDTO> listarTodos() {
 
-        Specification<CasaDeFesta> specification = (root, query, cb) -> cb.conjunction();
+        Specification<LocalEvento> specification = (root, query, cb) -> cb.conjunction();
 
         return casaRepository.findAll(specification)
                 .stream()
@@ -67,15 +67,15 @@ public class CasaDeFestaService {
     }
 
     // BUSCAR POR ID
-    public CasaDeFestaResponseDTO buscarPorId(Long id) {
-        CasaDeFesta casa = (CasaDeFesta) casaRepository.findById(id)
+    public LocalEventoResponseDTO buscarPorId(Long id) {
+        LocalEvento casa = (LocalEvento) casaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Casa de festa não encontrada: " + id));
 
         return paraDTO(casa);
     }
 
     // FILTROS (Specification)
-    public List<CasaDeFestaResponseDTO> buscarComFiltros(
+    public List<LocalEventoResponseDTO> buscarComFiltros(
             String nome,
             String cidade,
             String tipoEvento,
@@ -86,7 +86,7 @@ public class CasaDeFestaService {
             Boolean status
     ) {
 
-        Specification<CasaDeFesta> specification = (root, query, cb) -> cb.conjunction();
+        Specification<LocalEvento> specification = (root, query, cb) -> cb.conjunction();
 
         if (nome != null && !nome.isBlank()) {
             specification = specification.and(CasaDeFestaSpecification.temNome(nome));
@@ -127,9 +127,9 @@ public class CasaDeFestaService {
     }
 
     // UPDATE
-    public CasaDeFestaResponseDTO atualizar(Long id, CasaDeFestaCreateDTO dto) {
+    public LocalEventoResponseDTO atualizar(Long id, LocalEventoCreateDTO dto) {
 
-        CasaDeFesta casa = (CasaDeFesta) casaRepository.findById(id)
+        LocalEvento casa = (LocalEvento) casaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Casa de festa não encontrada: " + id));
 
         casa.setNome(dto.getNome());
@@ -141,7 +141,7 @@ public class CasaDeFestaService {
         casa.setBuffetIncluso(dto.getBuffetIncluso());
         casa.setStatus(dto.getStatus());
 
-        CasaDeFesta atualizado = casaRepository.save(casa);
+        LocalEvento atualizado = casaRepository.save(casa);
 
         return paraDTO(atualizado);
     }
@@ -149,7 +149,7 @@ public class CasaDeFestaService {
     // DELETE
     public void deletar(Long id) {
 
-        CasaDeFesta casa = (CasaDeFesta) casaRepository.findById(id)
+        LocalEvento casa = (LocalEvento) casaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Casa de festa não encontrada: " + id));
 
         casaRepository.delete(casa);

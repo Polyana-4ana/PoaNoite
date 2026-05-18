@@ -1,8 +1,8 @@
 package polyana.example.poanoite.controller;
 
 import polyana.example.poanoite.service.CasaDeFestaService;
-import polyana.example.poanoite.dto.CasaDeFestaCreateDTO;
-import polyana.example.poanoite.dto.CasaDeFestaResponseDTO;
+import polyana.example.poanoite.dto.LocalEventoCreateDTO;
+import polyana.example.poanoite.dto.LocalEventoResponseDTO;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +20,7 @@ public class CasaDeFestaController {
 
     // LISTAR COM FILTROS (Specification)
     @GetMapping
-    public List<CasaDeFestaResponseDTO> listarCasas(
+    public List<LocalEventoResponseDTO> listarCasas(
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String cidade,
             @RequestParam(required = false) String tipoEvento,
@@ -44,21 +44,21 @@ public class CasaDeFestaController {
 
     // BUSCAR POR ID
     @GetMapping("/{id}")
-    public CasaDeFestaResponseDTO buscarPorId(@PathVariable Long id) {
+    public LocalEventoResponseDTO buscarPorId(@PathVariable Long id) {
         return casaService.buscarPorId(id);
     }
 
     // CRIAR
     @PostMapping
-    public CasaDeFestaResponseDTO criar(@Valid @RequestBody CasaDeFestaCreateDTO dto) {
+    public LocalEventoResponseDTO criar(@Valid @RequestBody LocalEventoCreateDTO dto) {
         return casaService.criar(dto);
     }
 
     // ATUALIZAR
     @PutMapping("/{id}")
-    public CasaDeFestaResponseDTO atualizar(
+    public LocalEventoResponseDTO atualizar(
             @PathVariable Long id,
-            @Valid @RequestBody CasaDeFestaCreateDTO dto
+            @Valid @RequestBody LocalEventoCreateDTO dto
     ) {
         return casaService.atualizar(id, dto);
     }

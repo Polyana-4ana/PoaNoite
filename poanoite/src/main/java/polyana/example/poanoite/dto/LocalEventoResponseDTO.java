@@ -1,6 +1,6 @@
 package polyana.example.poanoite.dto;
 
-public class CasaDeFestaResponseDTO {
+public class LocalEventoResponseDTO {
 
     private Long id;
     private String nome;
