@@ -12,7 +12,9 @@ import java.util.UUID;
 public interface PostRepository extends JpaRepository<Post, UUID> {
 
     List<Post> findBycriadoEmBetweenOrderByScoreDesc(
-            LocalDateTime inicio, LocalDateTime fim);
+            LocalDateTime inicio,
+            LocalDateTime fim
+    );
 
     @Query("SELECT p FROM Post p WHERE p.autor.id IN " +
             "(SELECT s.seguido.id FROM Seguidor s WHERE s.seguidor.id = :usuarioId) " +
@@ -20,4 +22,5 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
     List<Post> findPostsDeSeguidosPor(@Param("usuarioId") UUID usuarioId);
 
     List<Post> findByAutorIdOrderByCriadoEmDesc(UUID autorId);
+
 }
