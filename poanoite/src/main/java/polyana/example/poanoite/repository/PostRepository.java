@@ -23,4 +23,8 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
 
     List<Post> findByAutorIdOrderByCriadoEmDesc(UUID autorId);
 
+    @Query("SELECT p FROM Post p WHERE LOWER(p.titulo) LIKE LOWER(CONCAT('%', :termo, '%')) " +
+            "OR LOWER(p.descricao) LIKE LOWER(CONCAT('%', :termo, '%'))")
+    List<Post> pesquisarPorTermo(@Param("termo") String termo);
+
 }
