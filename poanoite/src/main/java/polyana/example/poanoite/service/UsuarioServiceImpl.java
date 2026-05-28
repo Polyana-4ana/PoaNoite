@@ -51,6 +51,22 @@ public class UsuarioServiceImpl implements UsuarioService {
         return toResponse(usuario);
     }
 
+    @Override
+    public UsuarioResponse atualizar(UUID id, UsuarioRequest request) {
+
+        Usuario usuario = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Usuario nao encontrado: " + id));
+
+        usuario.setNome(request.getNome());
+        usuario.setTelefone(request.getTelefone());
+        usuario.setFotoUrl(request.getFotoUrl());
+
+        Usuario atualizado = repository.save(usuario);
+
+        return toResponse(atualizado);
+    }
+
     private UsuarioResponse toResponse(Usuario usuario) {
         return UsuarioResponse.builder()
                 .id(usuario.getId())

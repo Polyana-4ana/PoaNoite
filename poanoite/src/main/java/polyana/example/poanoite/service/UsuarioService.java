@@ -10,4 +10,5 @@ public interface UsuarioService {
     UsuarioResponse criar(UsuarioRequest request);
 
     UsuarioResponse buscarPorId(UUID id);
+    UsuarioResponse atualizar(UUID id, UsuarioRequest request);
 }
