@@ -28,4 +28,12 @@ public class UsuarioController {
     public ResponseEntity<UsuarioResponse> buscarPorId(@PathVariable UUID id) {
         return ResponseEntity.ok(service.buscarPorId(id));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioResponse> atualizar(
+            @PathVariable UUID id,
+            @Valid @RequestBody UsuarioRequest request
+    ) {
+        return ResponseEntity.ok(service.atualizar(id, request));
+    }
 }
