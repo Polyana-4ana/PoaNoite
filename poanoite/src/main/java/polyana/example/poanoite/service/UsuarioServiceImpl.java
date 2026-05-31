@@ -1,6 +1,7 @@
 package polyana.example.poanoite.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import polyana.example.poanoite.domain.Usuario;
 import polyana.example.poanoite.dto.UsuarioRequest;
@@ -20,6 +21,7 @@ import java.util.UUID;
 public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository repository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public UsuarioResponse criar(UsuarioRequest request) {
@@ -52,6 +54,34 @@ public class UsuarioServiceImpl implements UsuarioService {
         return toResponse(usuario);
     }
 
+    @Override
+    public UsuarioResponse atualizar(UUID id, UsuarioRequest request) {
+        Usuario usuario = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Usuario nao encontrado: " + id));
+
+        usuario.setNome(request.getNome());
+        usuario.setTelefone(request.getTelefone());
+        usuario.setFotoUrl(request.getFotoUrl());
+
+        Usuario atualizado = repository.save(usuario);
+        return toResponse(atualizado);
+    }
+
+    @Override
+    public void excluirConta(UUID usuarioId, String senha) {
+        Usuario usuario = repository.findById(usuarioId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Usuario nao encontrado: " + usuarioId));
+
+        if (!hashSha256(senha).equals(usuario.getSenhaHash())) {
+            throw new RuntimeException("Senha incorreta");
+        }
+
+        eventPublisher.publishEvent(new ContaExcluidaEvent(usuarioId));
+        repository.delete(usuario);
+    }
+
     private UsuarioResponse toResponse(Usuario usuario) {
         return UsuarioResponse.builder()
                 .id(usuario.getId())
@@ -71,23 +101,5 @@ public class UsuarioServiceImpl implements UsuarioService {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Erro ao gerar hash", e);
         }
-    }
-
-    private final org.springframework.context.ApplicationEventPublisher eventPublisher;
-    private final org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder bCrypt
-            = new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
-
-    @Override
-    public void excluirConta(UUID usuarioId, String senha) {
-        Usuario usuario = repository.findById(usuarioId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Usuario nao encontrado: " + usuarioId));
-
-        if (!bCrypt.matches(senha, usuario.getSenhaHash())) {
-            throw new RuntimeException("Senha incorreta");
-        }
-
-        eventPublisher.publishEvent(new ContaExcluidaEvent(usuarioId));
-        repository.delete(usuario);
     }
 }

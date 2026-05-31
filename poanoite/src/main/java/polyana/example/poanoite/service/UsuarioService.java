@@ -11,5 +11,7 @@ public interface UsuarioService {
 
     UsuarioResponse buscarPorId(UUID id);
 
+    UsuarioResponse atualizar(UUID id, UsuarioRequest request);
+
     void excluirConta(UUID usuarioId, String senha);
 }

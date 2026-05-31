@@ -30,6 +30,13 @@ public class UsuarioController {
         return ResponseEntity.ok(service.buscarPorId(id));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioResponse> atualizar(
+            @PathVariable UUID id,
+            @Valid @RequestBody UsuarioRequest request) {
+        return ResponseEntity.ok(service.atualizar(id, request));
+    }
+
     @DeleteMapping("/me")
     public ResponseEntity<Void> excluirConta(
             @RequestHeader("X-User-Id") UUID usuarioId,

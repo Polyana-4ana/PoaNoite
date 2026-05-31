@@ -32,4 +32,6 @@ public class UsuarioRequest {
     @Pattern(regexp = ".*[A-Z].*", message = "Senha deve ter ao menos uma letra maiuscula")
     @Pattern(regexp = ".*[0-9].*", message = "Senha deve ter ao menos um numero")
     private String senha;
+
+    private String fotoUrl;
 }
