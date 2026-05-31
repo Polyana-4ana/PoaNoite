@@ -15,4 +15,5 @@ public interface SeguidorRepository extends JpaRepository<Seguidor, SeguidorId> 
     void deleteBySeguidorId(UUID seguidorId);
 
     void deleteBySeguidoId(UUID seguidoId);
+
 }

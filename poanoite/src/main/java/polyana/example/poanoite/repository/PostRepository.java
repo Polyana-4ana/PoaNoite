@@ -27,4 +27,6 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
             "OR LOWER(p.descricao) LIKE LOWER(CONCAT('%', :termo, '%'))")
     List<Post> pesquisarPorTermo(@Param("termo") String termo);
 
+    void deleteByAutorId(UUID autorId);
+
 }

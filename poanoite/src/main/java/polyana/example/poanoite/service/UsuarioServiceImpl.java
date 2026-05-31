@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import polyana.example.poanoite.domain.Usuario;
 import polyana.example.poanoite.dto.UsuarioRequest;
 import polyana.example.poanoite.dto.UsuarioResponse;
+import polyana.example.poanoite.event.ContaExcluidaEvent;
 import polyana.example.poanoite.exception.ResourceNotFoundException;
 import polyana.example.poanoite.repository.UsuarioRepository;
 
@@ -70,5 +71,23 @@ public class UsuarioServiceImpl implements UsuarioService {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Erro ao gerar hash", e);
         }
+    }
+
+    private final org.springframework.context.ApplicationEventPublisher eventPublisher;
+    private final org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder bCrypt
+            = new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
+
+    @Override
+    public void excluirConta(UUID usuarioId, String senha) {
+        Usuario usuario = repository.findById(usuarioId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Usuario nao encontrado: " + usuarioId));
+
+        if (!bCrypt.matches(senha, usuario.getSenhaHash())) {
+            throw new RuntimeException("Senha incorreta");
+        }
+
+        eventPublisher.publishEvent(new ContaExcluidaEvent(usuarioId));
+        repository.delete(usuario);
     }
 }

@@ -11,4 +11,5 @@ public interface VotoRepository extends JpaRepository<Voto, VotoId> {
     boolean existsByUsuarioIdAndPostId(UUID usuarioId, UUID postId);
 
     void deleteByUsuarioId(UUID usuarioId);
+
 }
