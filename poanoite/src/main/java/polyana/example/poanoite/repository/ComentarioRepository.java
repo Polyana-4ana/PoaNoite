@@ -7,4 +7,5 @@ import java.util.UUID;
 
 public interface ComentarioRepository extends JpaRepository<Comentario, UUID> {
 
+    void deleteByAutorId(UUID autorId);
 }

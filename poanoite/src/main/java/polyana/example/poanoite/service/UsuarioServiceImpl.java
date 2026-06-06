@@ -1,10 +1,12 @@
 package polyana.example.poanoite.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import polyana.example.poanoite.domain.Usuario;
 import polyana.example.poanoite.dto.UsuarioRequest;
 import polyana.example.poanoite.dto.UsuarioResponse;
+import polyana.example.poanoite.event.ContaExcluidaEvent;
 import polyana.example.poanoite.exception.ResourceNotFoundException;
 import polyana.example.poanoite.repository.UsuarioRepository;
 
@@ -19,6 +21,7 @@ import java.util.UUID;
 public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository repository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public UsuarioResponse criar(UsuarioRequest request) {
@@ -49,6 +52,34 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Usuario nao encontrado: " + id));
         return toResponse(usuario);
+    }
+
+    @Override
+    public UsuarioResponse atualizar(UUID id, UsuarioRequest request) {
+        Usuario usuario = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Usuario nao encontrado: " + id));
+
+        usuario.setNome(request.getNome());
+        usuario.setTelefone(request.getTelefone());
+        usuario.setFotoUrl(request.getFotoUrl());
+
+        Usuario atualizado = repository.save(usuario);
+        return toResponse(atualizado);
+    }
+
+    @Override
+    public void excluirConta(UUID usuarioId, String senha) {
+        Usuario usuario = repository.findById(usuarioId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Usuario nao encontrado: " + usuarioId));
+
+        if (!hashSha256(senha).equals(usuario.getSenhaHash())) {
+            throw new RuntimeException("Senha incorreta");
+        }
+
+        eventPublisher.publishEvent(new ContaExcluidaEvent(usuarioId));
+        repository.delete(usuario);
     }
 
     private UsuarioResponse toResponse(Usuario usuario) {
