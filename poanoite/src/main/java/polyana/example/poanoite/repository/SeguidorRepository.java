@@ -1,5 +1,6 @@
 package polyana.example.poanoite.repository;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import polyana.example.poanoite.domain.Seguidor;
 import polyana.example.poanoite.domain.SeguidorId;
@@ -12,8 +13,10 @@ public interface SeguidorRepository extends JpaRepository<Seguidor, SeguidorId> 
 
     void deleteBySeguidorIdAndSeguidoId(UUID seguidorId, UUID seguidoId);
 
+    @Transactional
     void deleteBySeguidorId(UUID seguidorId);
 
+    @Transactional
     void deleteBySeguidoId(UUID seguidoId);
 
 }
