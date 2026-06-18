@@ -1,5 +1,6 @@
 package polyana.example.poanoite.repository;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,5 +23,12 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
     List<Post> findPostsDeSeguidosPor(@Param("usuarioId") UUID usuarioId);
 
     List<Post> findByAutorIdOrderByCriadoEmDesc(UUID autorId);
+
+    @Query("SELECT p FROM Post p WHERE LOWER(p.titulo) LIKE LOWER(CONCAT('%', :termo, '%')) " +
+            "OR LOWER(p.descricao) LIKE LOWER(CONCAT('%', :termo, '%'))")
+    List<Post> pesquisarPorTermo(@Param("termo") String termo);
+
+    @Transactional
+    void deleteByAutorId(UUID autorId);
 
 }

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import polyana.example.poanoite.dto.ExcluirContaRequest;
 import polyana.example.poanoite.dto.UsuarioRequest;
 import polyana.example.poanoite.dto.UsuarioResponse;
 import polyana.example.poanoite.service.UsuarioService;
@@ -27,5 +28,20 @@ public class UsuarioController {
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioResponse> buscarPorId(@PathVariable UUID id) {
         return ResponseEntity.ok(service.buscarPorId(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioResponse> atualizar(
+            @PathVariable UUID id,
+            @Valid @RequestBody UsuarioRequest request) {
+        return ResponseEntity.ok(service.atualizar(id, request));
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> excluirConta(
+            @RequestHeader("X-User-Id") UUID usuarioId,
+            @Valid @RequestBody ExcluirContaRequest request) {
+        service.excluirConta(usuarioId, request.getSenha());
+        return ResponseEntity.noContent().build();
     }
 }
